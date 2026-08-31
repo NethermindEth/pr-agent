@@ -26,6 +26,11 @@ class TestExtractRelevantLinesStr:
         result = extract_relevant_lines_str(end_line=2, files=[file], relevant_file="src/foo.py", start_line=1)
         assert result == ""
 
+    def test_returns_empty_when_slice_is_out_of_range(self):
+        file = _make_file("src/foo.py", "line1\nline2\nline3\n")
+        result = extract_relevant_lines_str(end_line=99, files=[file], relevant_file="src/foo.py", start_line=50)
+        assert result == ""
+
     def test_extracts_single_line(self):
         file = _make_file("src/foo.py", "line1\nline2\nline3\n")
         result = extract_relevant_lines_str(end_line=2, files=[file], relevant_file="src/foo.py", start_line=2)
@@ -118,7 +123,7 @@ class TestDetailsBlockWithCodeFence:
     regardless of whether the content contained its own ```, which caused the parser
     to see two fenced blocks and emit a stray ``` before </details>.
 
-    The fix uses a longer fence (````markdown...````) whenever the content contains ```.
+    The fix picks a fence the content cannot close, preferring ~~~ over ```` here.
     """
 
     def test_fenced_block_in_issue_content_uses_longer_fence(self):
@@ -193,7 +198,7 @@ class TestConvertToMarkdownV2ThreeIssues:
       1. Python file, lines 59-63 — no inner fences → plain ```python fence expected.
       2. Python file, lines 25-38 — no inner fences → plain ```python fence expected.
       3. README.md, lines 41-43 — line 43 IS a closing ``` fence inside the README,
-         so the outer fence must use 4 backticks (````markdown).
+         so the outer fence must be a tilde fence (~~~markdown).
     """
 
     # Generic Python block at lines 59-63: no backtick sequences inside.
