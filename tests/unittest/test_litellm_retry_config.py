@@ -17,7 +17,6 @@ from pr_agent.algo.ai_handlers.litellm_ai_handler import (
     _should_retry_same_model,
 )
 from pr_agent.config_loader import get_settings
-
 from tests.unittest._settings_helpers import restore_settings, snapshot_settings
 
 KEYS = ("config.retry_same_model_on_timeout", "config.num_retries")
